@@ -17,7 +17,6 @@ class MainActivity : ComponentActivity() {
     private lateinit var mPlayerWins: TextView
     private lateinit var mBotWins: TextView
     private lateinit var mTies: TextView
-    private lateinit var mGame: TicTacToeGame
     private var playerWins = 0
     private var botWins = 0
     private var ties = 0
@@ -64,9 +63,6 @@ class MainActivity : ComponentActivity() {
         mButtonDifficulty.setOnClickListener {
             changeDifficulty()
         }
-
-        // Inicializar el juego
-        mGame = TicTacToeGame()
     }
 
     private fun changeDifficulty() {
@@ -159,7 +155,7 @@ class MainActivity : ComponentActivity() {
     private fun setMove(player: Char, location: Int) {
         TIC_TAC_TOE[location] = player
         mBoardButtons[location].isEnabled = false
-        if (player == TicTacToeGame.HUMAN_PLAYER) mBoardButtons[location].setImageResource(R.drawable.x)
+        if (player == HUMAN_PLAYER) mBoardButtons[location].setImageResource(R.drawable.x)
         else mBoardButtons[location].setImageResource(R.drawable.circle)
     }
 
