@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/againButton"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="35dp"
+        android:layout_marginRight="20dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/X"
+            android:layout_width="10dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:src="@drawable/x" />
+
+        <ImageView
+            android:id="@+id/O"
+            android:layout_width="10dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:src="@drawable/circle" />
+
+        <ImageView
+            android:id="@+id/draw"
+            android:layout_width="10dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:src="@drawable/draw" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="19dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/playerWins"
+            android:layout_width="116dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/fredoka"
+            android:text="0 wins"
+            android:textAlignment="center"
+            android:textColor="#3989D4"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/botWins"
+            android:layout_width="126dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/fredoka"
+            android:text="0 wins"
+            android:textAlignment="center"
+            android:textColor="#39BBD2"
+            android:textSize="15dp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/draws"
+            android:layout_width="119dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/fredoka"
+            android:text="0 draws"
+            android:textAlignment="center"
+            android:textColor="#9E9E9E"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="420dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60dp">
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="375dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="25dp"
+            android:background="@drawable/tablero"
+            android:scaleType="fitXY" />
+
+        <TableLayout
+            android:id="@+id/play_grid"
+            android:layout_width="fill_parent"
+            android:layout_height="347dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="37dp"
+            android:layout_marginRight="25dp">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="20dp"
+                android:gravity="center_horizontal">
+
+                <ImageView
+                    android:id="@+id/one"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:src="@drawable/baseline_square_24" />
+
+                <ImageView
+                    android:id="@+id/two"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:src="@drawable/baseline_square_24" />
+
+                <ImageView
+                    android:id="@+id/three"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:src="@drawable/baseline_square_24" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:gravity="center_horizontal">
+
+                <ImageView
+                    android:id="@+id/four"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:src="@drawable/baseline_square_24" />
+
+                <ImageView
+                    android:id="@+id/five"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:src="@drawable/baseline_square_24" />
+
+                <ImageView
+                    android:id="@+id/six"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:src="@drawable/baseline_square_24" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp"
+                android:gravity="center_horizontal">
+
+                <ImageView
+                    android:id="@+id/seven"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:src="@drawable/baseline_square_24" />
+
+                <ImageView
+                    android:id="@+id/eight"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:src="@drawable/baseline_square_24" />
+
+                <ImageView
+                    android:id="@+id/nine"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:src="@drawable/baseline_square_24" />
+
+            </TableRow>
+        </TableLayout>
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/information"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:fontFamily="@font/fredoka"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:text=""
+        android:textSize="35dp" />
+
+
+    <Button
+        android:id="@+id/playAgainButton"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="250dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="40dp"
+        android:backgroundTint="#3988D2"
+        android:text="PLAY"
+        android:textColorLink="#319B90"
+        android:fontFamily="@font/fredoka"
+        android:textStyle="bold"/>
+
+    <Button
+        android:id="@+id/configurationButton"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="250dp"
+        android:layout_height="70dp"
+        android:backgroundTint="#FFFFFF"
+        android:text="EASY"
+        android:textColor="#3987D0"
+        android:textColorLink="#319B90"
+        android:fontFamily="@font/fredoka"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/difficulty"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="EASY"
+        android:textSize="15dp"
+        android:fontFamily="@font/fredoka"
+        android:textStyle="bold"/>
+
+</LinearLayout>
