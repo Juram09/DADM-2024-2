@@ -1,6 +1,7 @@
 package com.example.androidtictactoe
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -12,7 +13,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var mBoardButtons: Array<ImageView>
     private lateinit var mInfoTextView: TextView
     private lateinit var mButtonPlayAgain: Button
-    private lateinit var mButtonDifficulty: Button
+    private lateinit var mButtonConfiguration: Button
     private lateinit var mInfoDifficultyTextView: TextView
     private lateinit var mPlayerWins: TextView
     private lateinit var mBotWins: TextView
@@ -28,11 +29,21 @@ class MainActivity : ComponentActivity() {
         const val EMPTY_SPACE = ' '
         val TIC_TAC_TOE = charArrayOf(EMPTY_SPACE, EMPTY_SPACE, EMPTY_SPACE, EMPTY_SPACE, EMPTY_SPACE, EMPTY_SPACE, EMPTY_SPACE, EMPTY_SPACE, EMPTY_SPACE)
         val DIFFICULTIES = arrayOf("EASY", "NORMAL", "HARD")
+        const val PREFS_NAME = "GameHistory"
+        const val PLAYER_WINS_KEY = "playerWins"
+        const val BOT_WINS_KEY = "botWins"
+        const val TIES_KEY = "ties"
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main)
+        val sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        playerWins = sharedPreferences.getInt(PLAYER_WINS_KEY, 0)
+        botWins = sharedPreferences.getInt(BOT_WINS_KEY, 0)
+        ties = sharedPreferences.getInt(TIES_KEY, 0)
+
         mBoardButtons = arrayOf(
             findViewById(R.id.one),
             findViewById(R.id.two),
@@ -47,25 +58,24 @@ class MainActivity : ComponentActivity() {
 
         mInfoTextView = findViewById(R.id.information)
         mButtonPlayAgain = findViewById(R.id.playAgainButton)
-        mButtonDifficulty = findViewById(R.id.configurationButton)
+        mButtonConfiguration = findViewById(R.id.configurationButton)
         mInfoDifficultyTextView = findViewById(R.id.difficulty)
         mPlayerWins = findViewById(R.id.playerWins)
         mBotWins = findViewById(R.id.botWins)
         mTies = findViewById(R.id.draws)
         mInfoDifficultyTextView.visibility = View.GONE
+        mPlayerWins.text = "$playerWins wins"
+        mBotWins.text = "$botWins wins"
+        mTies.text = "$ties draws"
+
 
         mButtonPlayAgain.setOnClickListener {
             startNewGame()
         }
 
-        mButtonDifficulty.setOnClickListener {
-            changeDifficulty()
+        mButtonConfiguration.setOnClickListener {
+            showSettingsDialog()
         }
-    }
-
-    private fun changeDifficulty() {
-        difficulty = (difficulty+1)%3
-        mButtonDifficulty.text = DIFFICULTIES[difficulty]
     }
 
     @SuppressLint("SetTextI18n")
@@ -73,9 +83,9 @@ class MainActivity : ComponentActivity() {
         clearBoard()
         mInfoTextView.text = "Player's turn"
         mButtonPlayAgain.visibility = View.GONE
-        mButtonDifficulty.visibility = View.GONE
-        mInfoDifficultyTextView.text = DIFFICULTIES[difficulty]
+        mButtonConfiguration.visibility = View.GONE
         mInfoDifficultyTextView.visibility = View.VISIBLE
+        mInfoDifficultyTextView.text = DIFFICULTIES[difficulty]
         mButtonPlayAgain.text = "PLAY AGAIN!"
     }
 
@@ -107,28 +117,36 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-    
+
     @SuppressLint("SetTextI18n")
     private fun endGame(winner: Int) {
+        val sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+
         when (winner) {
             1 -> {
                 mInfoTextView.text = "It's a tie!"
                 ties++
                 mTies.text = "$ties draws"
+                editor.putInt(TIES_KEY, ties)
             }
             2 -> {
                 mInfoTextView.text = "You won!"
                 playerWins++
                 mPlayerWins.text = "$playerWins wins"
+                editor.putInt(PLAYER_WINS_KEY, playerWins)
             }
             3 -> {
                 mInfoTextView.text = "Android won!"
                 botWins++
                 mBotWins.text = "$botWins wins"
+                editor.putInt(BOT_WINS_KEY, botWins)
             }
         }
+
+        editor.apply()
         mButtonPlayAgain.visibility = View.VISIBLE
-        mButtonDifficulty.visibility = View.VISIBLE
+        mButtonConfiguration.visibility = View.VISIBLE
         mInfoDifficultyTextView.visibility = View.GONE
 
         for (button in mBoardButtons) {
@@ -179,6 +197,7 @@ class MainActivity : ComponentActivity() {
             else -> -1
         }
     }
+
     // Dificultad 0: Movimiento aleatorio
     private fun randomMove(): Int {
         val availableMoves = TIC_TAC_TOE.indices.filter { TIC_TAC_TOE[it] == EMPTY_SPACE }
@@ -264,5 +283,43 @@ class MainActivity : ComponentActivity() {
             }
             return bestScore
         }
+    }
+
+    private fun showSettingsDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Settings")
+
+        val difficulties = arrayOf("Easy", "Normal", "Hard")
+        builder.setSingleChoiceItems(difficulties, difficulty) { _, which ->
+            difficulty = which
+            mInfoDifficultyTextView.text = DIFFICULTIES[which]
+        }
+
+        builder.setPositiveButton("Clear History") { dialog, _ ->
+            resetHistory()
+            dialog.dismiss()
+        }
+
+        builder.setNegativeButton("Close") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        builder.create().show()
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun resetHistory() {
+        val sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.clear()
+        editor.apply()
+
+        playerWins = 0
+        botWins = 0
+        ties = 0
+
+        mPlayerWins.text = "$playerWins wins"
+        mBotWins.text = "$botWins wins"
+        mTies.text = "$ties draws"
     }
 }
