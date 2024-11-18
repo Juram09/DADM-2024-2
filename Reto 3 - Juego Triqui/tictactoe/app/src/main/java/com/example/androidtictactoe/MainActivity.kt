@@ -33,7 +33,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main)
-        // Inicializar botones del tablero
         mBoardButtons = arrayOf(
             findViewById(R.id.one),
             findViewById(R.id.two),
@@ -46,7 +45,6 @@ class MainActivity : ComponentActivity() {
             findViewById(R.id.nine)
         )
 
-        // Inicializar vistas adicionales
         mInfoTextView = findViewById(R.id.information)
         mButtonPlayAgain = findViewById(R.id.playAgainButton)
         mButtonDifficulty = findViewById(R.id.configurationButton)
@@ -82,7 +80,6 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun clearBoard() {
-        // Reset all buttons
         for (i in mBoardButtons.indices) {
             mBoardButtons[i].setImageResource(R.drawable.baseline_square_24)
             mBoardButtons[i].isEnabled = true
@@ -94,34 +91,23 @@ class MainActivity : ComponentActivity() {
     private inner class ButtonClickListener(private val location: Int) : View.OnClickListener {
         @SuppressLint("SetTextI18n")
         override fun onClick(view: View?) {
-            // Verifica si el botón está habilitado
             if (mBoardButtons[location].isEnabled) {
-                // Realiza el movimiento del jugador
                 setMove(HUMAN_PLAYER, location)
-
-                // Comprueba si hay un ganador
                 var winner = checkForWinner()
                 if (winner == 0) {
                     mInfoTextView.text = "Android's turn"
-
-                    // Movimiento del jugador Android
                     val move = getComputerMove()
                     setMove(COMPUTER_PLAYER, move)
-
-                    // Vuelve a comprobar el estado del juego
                     winner = checkForWinner()
                 }
-
-                // Actualiza la información en pantalla según el resultado
                 when (winner) {
                     0 -> mInfoTextView.text = "Player's turn"
                     else -> endGame(winner)
                 }
-
             }
         }
     }
-    // Finaliza el juego y muestra el botón Play Again
+    
     @SuppressLint("SetTextI18n")
     private fun endGame(winner: Int) {
         when (winner) {
@@ -143,10 +129,8 @@ class MainActivity : ComponentActivity() {
         }
         mButtonPlayAgain.visibility = View.VISIBLE
         mButtonDifficulty.visibility = View.VISIBLE
-        mInfoDifficultyTextView.visibility = View.GONE// Muestra el botón al finalizar el juego
+        mInfoDifficultyTextView.visibility = View.GONE
 
-
-        // Desactiva los botones restantes
         for (button in mBoardButtons) {
             button.isEnabled = false
         }
@@ -160,19 +144,17 @@ class MainActivity : ComponentActivity() {
     }
 
     fun checkForWinner(): Int {
-        // Líneas ganadoras
         val winningLines = arrayOf(
-            intArrayOf(0, 1, 2), // Filas
+            intArrayOf(0, 1, 2), 
             intArrayOf(3, 4, 5),
             intArrayOf(6, 7, 8),
-            intArrayOf(0, 3, 6), // Columnas
+            intArrayOf(0, 3, 6),
             intArrayOf(1, 4, 7),
             intArrayOf(2, 5, 8),
-            intArrayOf(0, 4, 8), // Diagonales
+            intArrayOf(0, 4, 8),
             intArrayOf(2, 4, 6)
         )
 
-        // Verifica si un jugador ganó
         for (line in winningLines) {
             if (TIC_TAC_TOE[line[0]] != EMPTY_SPACE &&
                 TIC_TAC_TOE[line[0]] == TIC_TAC_TOE[line[1]] &&
@@ -182,16 +164,13 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        // Verifica si hay un empate
         if (TIC_TAC_TOE.none { it == EMPTY_SPACE }) {
             return 1
         }
 
-        // Ningún ganador aún
         return 0
     }
 
-    // Lógica básica: elige la primera casilla vacía
     fun getComputerMove(): Int {
         return when (difficulty) {
             0 -> randomMove()
@@ -199,8 +178,7 @@ class MainActivity : ComponentActivity() {
             2 -> optimalMove()
             else -> -1
         }
-    }// Retorna -1 si no hay movimientos válidos
-
+    }
     // Dificultad 0: Movimiento aleatorio
     private fun randomMove(): Int {
         val availableMoves = TIC_TAC_TOE.indices.filter { TIC_TAC_TOE[it] == EMPTY_SPACE }
@@ -213,31 +191,28 @@ class MainActivity : ComponentActivity() {
 
     // Dificultad 1: Priorizar ganar, bloquear al jugador si puede ganar, o mover al azar
     private fun blockPlayerOrRandomMove(): Int {
-        // 1. Verifica si el bot puede ganar en la próxima jugada
         for (i in TIC_TAC_TOE.indices) {
             if (TIC_TAC_TOE[i] == EMPTY_SPACE) {
                 TIC_TAC_TOE[i] = COMPUTER_PLAYER
-                if (checkForWinner() == 3) { // El bot ganaría en esta posición
-                    TIC_TAC_TOE[i] = EMPTY_SPACE // Restaurar el tablero
-                    return i // Realizar el movimiento ganador
+                if (checkForWinner() == 3) {
+                    TIC_TAC_TOE[i] = EMPTY_SPACE 
+                    return i 
                 }
-                TIC_TAC_TOE[i] = EMPTY_SPACE // Restaurar el tablero
+                TIC_TAC_TOE[i] = EMPTY_SPACE 
             }
         }
-
-        // 2. Verifica si el jugador puede ganar en la próxima jugada y bloquea
+        
         for (i in TIC_TAC_TOE.indices) {
             if (TIC_TAC_TOE[i] == EMPTY_SPACE) {
                 TIC_TAC_TOE[i] = HUMAN_PLAYER
-                if (checkForWinner() == 2) { // El jugador ganaría en esta posición
-                    TIC_TAC_TOE[i] = EMPTY_SPACE // Restaurar el tablero
-                    return i // Bloquear movimiento
+                if (checkForWinner() == 2) { 
+                    TIC_TAC_TOE[i] = EMPTY_SPACE 
+                    return i 
                 }
-                TIC_TAC_TOE[i] = EMPTY_SPACE // Restaurar el tablero
+                TIC_TAC_TOE[i] = EMPTY_SPACE 
             }
         }
-
-        // 3. Si no hay jugadas críticas, mover al azar
+        
         return randomMove()
     }
 
@@ -245,7 +220,6 @@ class MainActivity : ComponentActivity() {
     private fun optimalMove(): Int {
         var bestMove = -1
         var bestScore = Int.MIN_VALUE
-
         for (i in TIC_TAC_TOE.indices) {
             if (TIC_TAC_TOE[i] == EMPTY_SPACE) {
                 TIC_TAC_TOE[i] = COMPUTER_PLAYER
@@ -263,9 +237,9 @@ class MainActivity : ComponentActivity() {
     // Algoritmo Minimax
     private fun minimax(depth: Int, isMaximizing: Boolean): Int {
         val winner = checkForWinner()
-        if (winner == 2) return -10 + depth // Jugador gana
-        if (winner == 3) return 10 - depth  // Bot gana
-        if (TIC_TAC_TOE.none { it == EMPTY_SPACE }) return 0 // Empate
+        if (winner == 2) return -10 + depth 
+        if (winner == 3) return 10 - depth  
+        if (TIC_TAC_TOE.none { it == EMPTY_SPACE }) return 0
 
         if (isMaximizing) {
             var bestScore = Int.MIN_VALUE
