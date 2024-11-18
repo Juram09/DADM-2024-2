@@ -2,6 +2,7 @@ package com.example.androidtictactoe
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -125,19 +126,19 @@ class MainActivity : ComponentActivity() {
 
         when (winner) {
             1 -> {
-                mInfoTextView.text = "It's a tie!"
+                mInfoTextView.text = "It's a tie! \uD83D\uDC22"
                 ties++
                 mTies.text = "$ties draws"
                 editor.putInt(TIES_KEY, ties)
             }
             2 -> {
-                mInfoTextView.text = "You won!"
+                mInfoTextView.text = "You won! \uD83E\uDD73"
                 playerWins++
                 mPlayerWins.text = "$playerWins wins"
                 editor.putInt(PLAYER_WINS_KEY, playerWins)
             }
             3 -> {
-                mInfoTextView.text = "Android won!"
+                mInfoTextView.text = "You lose! \uD83D\uDE1F"
                 botWins++
                 mBotWins.text = "$botWins wins"
                 editor.putInt(BOT_WINS_KEY, botWins)
@@ -286,7 +287,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun showSettingsDialog() {
-        val builder = AlertDialog.Builder(this)
+        val builder = AlertDialog.Builder(this, R.style.CustomRadioButton)
         builder.setTitle("Settings")
 
         val difficulties = arrayOf("Easy", "Normal", "Hard")
@@ -295,16 +296,33 @@ class MainActivity : ComponentActivity() {
             mInfoDifficultyTextView.text = DIFFICULTIES[which]
         }
 
-        builder.setPositiveButton("Clear History") { dialog, _ ->
+        builder.setNegativeButton("Clear History") { dialog, _ ->
             resetHistory()
+            clearBoard()
+            mInfoTextView.visibility = View.GONE
+            mButtonPlayAgain.text = "PLAY"
             dialog.dismiss()
         }
 
-        builder.setNegativeButton("Close") { dialog, _ ->
+        builder.setPositiveButton("Close") { dialog, _ ->
             dialog.dismiss()
         }
 
-        builder.create().show()
+        // Crear y mostrar el diálogo
+        val dialog = builder.create()
+        dialog.show()
+
+        // **Personalizar colores de los botones después de mostrar el diálogo**
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.apply {
+            setBackgroundColor(Color.WHITE)
+            setTextColor(Color.parseColor("#3988D2"))
+        }
+
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.apply {
+            setBackgroundColor(Color.WHITE)
+            setTextColor(Color.parseColor("#3988D2"))
+        }
+
     }
 
     @SuppressLint("SetTextI18n")

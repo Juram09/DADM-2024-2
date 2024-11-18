@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="CustomRadioButton" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="colorControlActivated">@color/alert_circle_color</item> <!-- Círculo seleccionado -->
+        <item name="colorControlHighlight">@color/white</item> <!-- Efecto al presionar -->
+    </style>
+</resources>
