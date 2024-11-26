@@ -291,21 +291,25 @@ class MainActivity : ComponentActivity() {
         builder.setTitle("Settings")
 
         val difficulties = arrayOf("Easy", "Normal", "Hard")
-        builder.setSingleChoiceItems(difficulties, difficulty) { _, which ->
+        builder.setSingleChoiceItems(difficulties, difficulty) { dialog, which ->
             difficulty = which
             mInfoDifficultyTextView.text = DIFFICULTIES[which]
-        }
-
-        builder.setNegativeButton("Clear History") { dialog, _ ->
-            resetHistory()
-            clearBoard()
-            mInfoTextView.visibility = View.GONE
-            mButtonPlayAgain.text = "PLAY"
             dialog.dismiss()
         }
+        /*
+                builder.setNegativeButton("Clear History") { dialog, _ ->
+                    resetHistory()
+                    clearBoard()
+                    mInfoTextView.visibility = View.GONE
+                    mButtonPlayAgain.text = "PLAY"
+                    dialog.dismiss()
+
+                }
+                     */
 
         builder.setPositiveButton("Close") { dialog, _ ->
-            dialog.dismiss()
+            finish()
+            //dialog.dismiss()
         }
 
         // Crear y mostrar el diálogo
