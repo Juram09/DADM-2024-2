@@ -3,12 +3,16 @@ package com.example.androidtictactoe
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.graphics.Color
+import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.ComponentActivity
+
 
 class MainActivity : ComponentActivity() {
     private lateinit var mBoardButtons: Array<ImageView>
@@ -19,10 +23,14 @@ class MainActivity : ComponentActivity() {
     private lateinit var mPlayerWins: TextView
     private lateinit var mBotWins: TextView
     private lateinit var mTies: TextView
+    private lateinit var moveMediaPlayer: MediaPlayer
+    private lateinit var winMediaPlayer: MediaPlayer
+    private lateinit var loseMediaPlayer: MediaPlayer
     private var playerWins = 0
     private var botWins = 0
     private var ties = 0
     private var difficulty = 0
+    private var turn = 0
 
     companion object {
         const val HUMAN_PLAYER = 'X'
@@ -102,25 +110,38 @@ class MainActivity : ComponentActivity() {
     private inner class ButtonClickListener(private val location: Int) : View.OnClickListener {
         @SuppressLint("SetTextI18n")
         override fun onClick(view: View?) {
-            if (mBoardButtons[location].isEnabled) {
+            if (mBoardButtons[location].isEnabled && turn == 0) {
+                moveMediaPlayer.start()
                 setMove(HUMAN_PLAYER, location)
                 var winner = checkForWinner()
                 if (winner == 0) {
+                    turn = 1
                     mInfoTextView.text = "Android's turn"
-                    val move = getComputerMove()
-                    setMove(COMPUTER_PLAYER, move)
-                    winner = checkForWinner()
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        val move = getComputerMove()
+                        setMove(COMPUTER_PLAYER, move)
+                        winner = checkForWinner()
+                        when (winner) {
+                            0 -> {
+                                turn = 0
+                                mInfoTextView.text = "Player's turn"
+                            }
+                            else -> endGame(winner)
+                        }
+                    }, 1000)
                 }
                 when (winner) {
-                    0 -> mInfoTextView.text = "Player's turn"
+                    0 -> turn = turn
                     else -> endGame(winner)
                 }
             }
         }
     }
 
+
     @SuppressLint("SetTextI18n")
     private fun endGame(winner: Int) {
+        turn = 0
         val sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
         val editor = sharedPreferences.edit()
 
@@ -132,12 +153,14 @@ class MainActivity : ComponentActivity() {
                 editor.putInt(TIES_KEY, ties)
             }
             2 -> {
+                winMediaPlayer.start()
                 mInfoTextView.text = "You won! \uD83E\uDD73"
                 playerWins++
                 mPlayerWins.text = "$playerWins wins"
                 editor.putInt(PLAYER_WINS_KEY, playerWins)
             }
             3 -> {
+                loseMediaPlayer.start()
                 mInfoTextView.text = "You lose! \uD83D\uDE1F"
                 botWins++
                 mBotWins.text = "$botWins wins"
@@ -344,4 +367,19 @@ class MainActivity : ComponentActivity() {
         mBotWins.text = "$botWins wins"
         mTies.text = "$ties draws"
     }
+
+    override fun onResume() {
+        super.onResume()
+        moveMediaPlayer = MediaPlayer.create(applicationContext, R.raw.move)
+        winMediaPlayer = MediaPlayer.create(applicationContext, R.raw.win)
+        loseMediaPlayer = MediaPlayer.create(applicationContext, R.raw.lose)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        moveMediaPlayer.release()
+        winMediaPlayer.release()
+        loseMediaPlayer.release()
+    }
 }
+
