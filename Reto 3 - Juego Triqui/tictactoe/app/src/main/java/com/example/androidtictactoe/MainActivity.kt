@@ -12,6 +12,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.ComponentActivity
+import com.example.androidtictactoe.MainActivity.Companion.EMPTY_SPACE
 
 
 class MainActivity : ComponentActivity() {
@@ -36,7 +37,7 @@ class MainActivity : ComponentActivity() {
         const val HUMAN_PLAYER = 'X'
         const val COMPUTER_PLAYER = 'O'
         const val EMPTY_SPACE = ' '
-        val TIC_TAC_TOE = charArrayOf(EMPTY_SPACE, EMPTY_SPACE, EMPTY_SPACE, EMPTY_SPACE, EMPTY_SPACE, EMPTY_SPACE, EMPTY_SPACE, EMPTY_SPACE, EMPTY_SPACE)
+        var TIC_TAC_TOE = charArrayOf(EMPTY_SPACE, EMPTY_SPACE, EMPTY_SPACE, EMPTY_SPACE, EMPTY_SPACE, EMPTY_SPACE, EMPTY_SPACE, EMPTY_SPACE, EMPTY_SPACE)
         val DIFFICULTIES = arrayOf("EASY", "NORMAL", "HARD")
         const val PREFS_NAME = "GameHistory"
         const val PLAYER_WINS_KEY = "playerWins"
@@ -84,6 +85,23 @@ class MainActivity : ComponentActivity() {
 
         mButtonConfiguration.setOnClickListener {
             showSettingsDialog()
+        }
+
+        if (savedInstanceState != null) {
+            for (i in mBoardButtons.indices) {
+                mBoardButtons[i].isEnabled = true
+                mBoardButtons[i].setOnClickListener(ButtonClickListener(i))
+            }
+            turn = savedInstanceState.getInt("turn");
+            TIC_TAC_TOE = (savedInstanceState.getCharArray("board")!!);
+            difficulty = savedInstanceState.getInt("difficulty");
+            mInfoTextView.text = savedInstanceState.getCharSequence("info");
+            mButtonPlayAgain.visibility = savedInstanceState.getInt("playvisibility");
+            mButtonConfiguration.visibility = savedInstanceState.getInt("configvisibility");
+            mInfoDifficultyTextView.visibility = savedInstanceState.getInt("diffvisibility");
+            mInfoDifficultyTextView.text = DIFFICULTIES[difficulty]
+            mButtonPlayAgain.text = "PLAY AGAIN!"
+            displayTicTacToe();
         }
     }
 
@@ -135,7 +153,38 @@ class MainActivity : ComponentActivity() {
                     else -> endGame(winner)
                 }
             }
+            else if (turn == 1) {
+                if (checkAndroidTurn()) {
+                    val move = getComputerMove()
+                    setMove(COMPUTER_PLAYER, move)
+                    turn = 0
+                    var winner = checkForWinner()
+                    when (winner) {
+                        0 -> {
+                            turn = 0
+                            mInfoTextView.text = "Player's turn"
+                        }
+                        else -> endGame(winner)
+                    }
+                } else {
+                    mInfoTextView.text = "Player's turn"
+                    turn = 0
+                }
+            }
         }
+    }
+
+    private fun checkAndroidTurn(): Boolean {
+        var countX = 0
+        var countO = 0
+        TIC_TAC_TOE.forEach {
+            if (it == HUMAN_PLAYER) {
+                countX++
+            }else if (it == COMPUTER_PLAYER) {
+                countO++
+            }
+        }
+        return (countO+1 == countX)
     }
 
 
@@ -380,6 +429,45 @@ class MainActivity : ComponentActivity() {
         moveMediaPlayer.release()
         winMediaPlayer.release()
         loseMediaPlayer.release()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putCharArray("board", TIC_TAC_TOE)
+        outState.putCharSequence("info", mInfoTextView.text)
+        outState.putInt("difficulty", difficulty)
+        outState.putInt("playvisibility", mButtonPlayAgain.visibility)
+        outState.putInt("configvisibility", mButtonConfiguration.visibility)
+        outState.putInt("diffvisibility", mInfoDifficultyTextView.visibility)
+        outState.putInt("turn", turn)
+    }
+
+    private fun displayTicTacToe() {
+        TIC_TAC_TOE.forEachIndexed { i, _ ->
+            if (TIC_TAC_TOE[i] != EMPTY_SPACE) {
+                mBoardButtons[i].isEnabled = false
+                if (TIC_TAC_TOE[i] == HUMAN_PLAYER) mBoardButtons[i].setImageResource(R.drawable.x)
+                else mBoardButtons[i].setImageResource(R.drawable.circle)
+            }
+        }
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        for (i in mBoardButtons.indices) {
+            mBoardButtons[i].isEnabled = true
+            mBoardButtons[i].setOnClickListener(ButtonClickListener(i))
+        }
+        turn = savedInstanceState.getInt("turn");
+        TIC_TAC_TOE = (savedInstanceState.getCharArray("board")!!);
+        difficulty = savedInstanceState.getInt("difficulty");
+        mInfoTextView.text = savedInstanceState.getCharSequence("info");
+        mButtonPlayAgain.visibility = savedInstanceState.getInt("playvisibility");
+        mButtonConfiguration.visibility = savedInstanceState.getInt("configvisibility");
+        mInfoDifficultyTextView.visibility = savedInstanceState.getInt("diffvisibility");
+        mInfoDifficultyTextView.text = DIFFICULTIES[difficulty]
+        mButtonPlayAgain.text = "PLAY AGAIN!"
+        displayTicTacToe();
     }
 }
 

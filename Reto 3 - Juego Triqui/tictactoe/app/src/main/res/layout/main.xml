@@ -67,7 +67,7 @@
             android:textAlignment="center"
             android:textColor="#39BBD2"
             android:textSize="15dp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/draws"
@@ -211,10 +211,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="0dp"
         android:fontFamily="@font/fredoka"
-        android:textStyle="bold"
         android:gravity="center"
         android:text=""
-        android:textSize="35dp" />
+        android:textSize="35dp"
+        android:textStyle="bold" />
 
 
     <Button
@@ -224,10 +224,10 @@
         android:layout_height="70dp"
         android:layout_marginTop="30dp"
         android:backgroundTint="#3988D2"
+        android:fontFamily="@font/fredoka"
         android:text="PLAY"
         android:textColorLink="#319B90"
-        android:fontFamily="@font/fredoka"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/configurationButton"
