@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Productos registrados</string>
+    <string name="prompt_origin">Seleccione Origen</string>
+    <string name="prompt_alcohol">Seleccione Grado de Alcohol</string>
+</resources>
